@@ -1,0 +1,13 @@
+{
+  "name": "release-action",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:arcanis/release-action",
+  "author": "Maël Nison <nison.mael@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.0.0",
+    "@octokit/rest": "^16.28.7",
+    "mime": "^2.4.4"
+  }
+}

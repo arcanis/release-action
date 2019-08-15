@@ -1,0 +1,12 @@
+name: 'Update draft releases'
+description: 'Action to attach build artifacts to a GitHub release'
+author: 'Maël Nison'
+
+inputs:
+    artifacts:
+        description: 'Path where the artifacts are stored'
+        default: 'artifacts'
+
+runs:
+    using: node12
+    main: 'main.js'
