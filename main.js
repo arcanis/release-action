@@ -46,15 +46,21 @@ async function main() {
             releaseMessage.push(`- New artifact: \`${entry}\``);
 
         console.log(entry);
-        await octokit.repos.uploadReleaseAsset({
-            url: uploadUrl,
-            headers: {
-                [`content-length`]: body.length,
-                [`content-type`]: mime.getType(entry),
-            },
-            name: entry,
-            file: body,
-        });
+
+        try {
+            await octokit.repos.uploadReleaseAsset({
+                url: uploadUrl,
+                headers: {
+                    [`content-length`]: body.length,
+                    [`content-type`]: mime.getType(entry),
+                },
+                name: entry,
+                file: body,
+            });
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     }
 
     if (latestRelease) {
@@ -64,10 +70,18 @@ async function main() {
             head: process.env.GITHUB_SHA,
         });
 
+        releaseMessage.push(`## Changelog`);
+
+        let hasCommits = false;
         for await (const {data: {commits}} of octokit.paginate.iterator(commitOptions)) {
             for (const {commit, author} of commits) {
-                releaseMessage.push(`- ${commit.message}\n  \n  [${author.login}](${author.html_url})`);
+                releaseMessage.push(`- ${commit.message}\n  \n  By **[${author.login}](${author.html_url})**`);
+                hasCommits = true;
             }
+        }
+
+        if (!hasCommits) {
+            releaseMessage.push(`n/a`);
         }
     }
 
