@@ -85,7 +85,7 @@ async function main() {
         let hasCommits = false;
         for await (const {data: {commits}} of octokit.paginate.iterator(commitOptions)) {
             for (const {commit, author} of commits) {
-                releaseMessage.push(`- ${commit.message}\n  \n  By **[${author.login}](${author.html_url})**`);
+                releaseMessage.push(`- ${commit.message.replace(/\n.*$/s, ``)}\n  \n  By **[${author.login}](${author.html_url})**`);
                 hasCommits = true;
             }
         }
