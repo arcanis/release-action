@@ -6,6 +6,7 @@ const {execFileSync} = require(`child_process`);
 const {readdirSync, readFileSync} = require(`fs`);
 const mime = require(`mime`);
 const path = require(`path`);
+const {inspect} = require(`util`);
 
 const artifacts = getInput(`artifacts`, {required: true});
 
@@ -58,7 +59,9 @@ async function main() {
                 file: body,
             });
         } catch (error) {
-            console.log(error);
+            if (error.errors)
+                error.message += inspect(error.errors);
+
             throw error;
         }
     }
