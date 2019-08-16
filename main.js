@@ -32,9 +32,16 @@ async function main() {
     const newArtifacts = new Set(allArtifacts);
     const releaseMessage = [];
 
-    const {data: latestRelease} = await octokit.repos.getLatestRelease({
-        ...repository,
-    });
+    let latestRelease = null;
+    try {
+        latestRelease = (await octokit.repos.getLatestRelease({
+            ...repository,
+        })).data;
+    } catch (error) {
+        if (error.status !== 404) {
+            throw error;
+        }
+    }
 
     if (latestRelease)
         for (const {name} of latestRelease.assets)
