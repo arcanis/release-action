@@ -55,12 +55,18 @@ async function main() {
 
         console.log(entry);
 
+        let contentType = mime.getType(entry);
+        if (contentType === null && path.extname(entry) === `.tgz`)
+            contentType = `application/gzip`;
+        if (contentType === null)
+            contentType = `application/octet-stream`;
+
         try {
             await octokit.repos.uploadReleaseAsset({
                 url: uploadUrl,
                 headers: {
                     [`content-length`]: body.length,
-                    [`content-type`]: mime.getType(entry),
+                    [`content-type`]: contentType,
                 },
                 name: entry,
                 file: body,
